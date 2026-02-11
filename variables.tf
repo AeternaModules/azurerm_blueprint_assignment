@@ -24,7 +24,7 @@ EOT
     version_id              = string
     lock_exclude_actions    = optional(list(string))
     lock_exclude_principals = optional(list(string))
-    lock_mode               = optional(string, "None")
+    lock_mode               = optional(string) # Default: "None"
     parameter_values        = optional(string)
     resource_groups         = optional(string)
     identity = object({
