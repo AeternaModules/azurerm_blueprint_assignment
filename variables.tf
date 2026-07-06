@@ -32,5 +32,42 @@ EOT
       type         = string
     })
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.blueprint_assignments : (
+        length(v.name) > 0
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_blueprint_assignment's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: target_subscription_id
+  #   source:    [from azure.ValidateResourceID] !ok
+  # path: target_subscription_id
+  #   source:    [from azure.ValidateResourceID] err != nil
+  # path: location
+  #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: identity.type
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: identity.identity_ids[*]
+  #   source:    [from commonids.ValidateUserAssignedIdentityID] !ok
+  # path: identity.identity_ids[*]
+  #   source:    [from commonids.ValidateUserAssignedIdentityID] err != nil
+  # path: version_id
+  #   source:    [from publishedblueprint.ValidateScopedVersionID] !ok
+  # path: version_id
+  #   source:    [from publishedblueprint.ValidateScopedVersionID] err != nil
+  # path: parameter_values
+  #   source:    validation.StringIsJSON(...) - no translation rule yet, add one
+  # path: resource_groups
+  #   source:    validation.StringIsJSON(...) - no translation rule yet, add one
+  # path: lock_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: lock_exclude_principals[*]
+  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
+  #   message:   must be a valid UUID
 }
 
