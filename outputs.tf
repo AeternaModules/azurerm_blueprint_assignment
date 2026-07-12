@@ -1,3 +1,7 @@
+output "blueprint_assignments_id" {
+  description = "Map of id values across all blueprint_assignments, keyed the same as var.blueprint_assignments"
+  value       = { for k, v in azurerm_blueprint_assignment.blueprint_assignments : k => v.id }
+}
 output "blueprint_assignments_blueprint_name" {
   description = "Map of blueprint_name values across all blueprint_assignments, keyed the same as var.blueprint_assignments"
   value       = { for k, v in azurerm_blueprint_assignment.blueprint_assignments : k => v.blueprint_name }
