@@ -24,7 +24,7 @@ EOT
     version_id              = string
     lock_exclude_actions    = optional(list(string))
     lock_exclude_principals = optional(list(string))
-    lock_mode               = optional(string) # Default: "None"
+    lock_mode               = optional(string)
     parameter_values        = optional(string)
     resource_groups         = optional(string)
     identity = object({
@@ -32,18 +32,13 @@ EOT
       type         = string
     })
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.blueprint_assignments : (
-        length(v.name) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_blueprint_assignment's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
   # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: target_subscription_id
   #   source:    [from azure.ValidateResourceID] !ok
   # path: target_subscription_id
