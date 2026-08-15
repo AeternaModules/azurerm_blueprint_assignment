@@ -16,7 +16,7 @@ output "blueprint_assignments_display_name" {
 }
 output "blueprint_assignments_identity" {
   description = "Map of identity values across all blueprint_assignments, keyed the same as var.blueprint_assignments"
-  value       = { for k, v in azurerm_blueprint_assignment.blueprint_assignments : k => v.identity if v.identity != null && length(v.identity) > 0 }
+  value       = { for k, v in azurerm_blueprint_assignment.blueprint_assignments : k => one(v.identity) if v.identity != null && length(v.identity) > 0 }
 }
 output "blueprint_assignments_location" {
   description = "Map of location values across all blueprint_assignments, keyed the same as var.blueprint_assignments"
